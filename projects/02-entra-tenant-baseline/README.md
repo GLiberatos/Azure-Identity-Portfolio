@@ -100,6 +100,7 @@ This project demonstrates identity administration fundamentals, including:
 | 04-group-inventory.md | Documents group inventory and group types |
 | 05-role-baseline.md | Documents administrative roles and privileged access baseline |
 | 06-tenant-settings-review.md | Documents tenant-wide settings and identity security posture |
+| 07-identity-administration-model.md | Documents identity administration model, source of authority, and enterprise design notes |
 | screenshots/ | Stores sanitized screenshots for documentation |
 
 ## Current Status
@@ -114,11 +115,12 @@ This project demonstrates identity administration fundamentals, including:
 | Group inventory documented | Complete |
 | Role baseline documented | Complete |
 | Tenant settings reviewed | Complete |
+| Identity administration model documented | Complete |
 | Screenshots added | Complete |
 | Final validation completed | Planned |
 
 ## Next Steps
 
-The next step is to complete final validation for the Entra tenant baseline.
+The next step is to complete a final security and risk findings review for Project 02.
 
-This includes confirming that the tenant overview, user inventory, group inventory, role baseline, screenshots, and lessons learned are complete before closing Project 02.
+This will summarize strengths, risks, improvement areas, and future project dependencies before closing the Entra tenant baseline project.
