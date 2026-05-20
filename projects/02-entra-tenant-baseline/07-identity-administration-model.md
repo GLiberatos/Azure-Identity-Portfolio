@@ -199,7 +199,7 @@ Possible lab naming examples:
 | Cloud admin account | `adm-cloud-username`             |
 | Break-glass account | `bg-emergency-01`                |
 | Test user           | `test-dept-user01`               |
-| Synced AD user      | Managed using existing AD naming |
+| Synced AD user      | `Managed using existing AD naming` |
 | Security group      | `grp-purpose-scope`              |
 | Microsoft 365 group | `m365-purpose-team`              |
 | Dynamic group       | `dyn-rule-purpose`               |
