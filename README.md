@@ -40,8 +40,8 @@ This portfolio is organized into several Microsoft cloud and identity engineerin
 | Project | Status | Focus |
 |---|---|---|
 | [Project 01 — Azure Cost Governance & Portfolio Foundation](projects/01-azure-cost-governance/) | Complete | Naming, tagging, cost governance, documentation |
-| [Project 02 — Entra Tenant Baseline](projects/02-entra-tenant-baseline/) | In Progress | Users, groups, roles, tenant structure |
-| [Project 03 — Microsoft 365 Tenant Baseline](projects/03-m365-tenant-baseline/) | Planned | M365 admin center, users, licenses, service settings |
+| [Project 02 — Entra Tenant Baseline](projects/02-entra-tenant-baseline/) | Complete | Users, groups, roles, tenant structure |
+| [Project 03 — Microsoft 365 Tenant Baseline](projects/03-m365-tenant-baseline/) | In Progress | M365 admin center, users, licenses, service settings |
 | [Project 04 — Hybrid Identity Lab](projects/04-hybrid-identity-lab/) | Planned | AD DS, Entra Connect, sync validation |
 | [Project 05 — Conditional Access Lab](projects/05-entra-conditional-access-lab/) | Planned | MFA, named locations, access controls |
 | [Project 06 — Intune / Endpoint Management Lab](projects/06-intune-endpoint-management-lab/) | Planned | MDM, device enrollment, compliance policies |
@@ -142,9 +142,10 @@ Screenshots are sanitized before being published.
 
 | Item | Status |
 |---|---|
-| Active project | Project 02 — Entra Tenant Baseline |
-| Project planning | In Progress |
-| Tenant baseline documentation | Planned |
-| Users, groups, and roles | Planned |
+| Active project | Project 03 — Microsoft 365 Tenant Baseline |
+| Project planning | Planned |
+| Microsoft 365 admin center review | Planned |
+| Users and licenses review | Planned |
+| Service health review | Planned |
 | Screenshots and validation | Planned |
 | Lessons learned | Planned |
