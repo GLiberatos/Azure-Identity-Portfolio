@@ -99,6 +99,7 @@ This project demonstrates identity administration fundamentals, including:
 | 03-user-inventory.md | Documents user inventory and identity types |
 | 04-group-inventory.md | Documents group inventory and group types |
 | 05-role-baseline.md | Documents administrative roles and privileged access baseline |
+| 06-tenant-settings-review.md | Documents tenant-wide settings and identity security posture |
 | screenshots/ | Stores sanitized screenshots for documentation |
 
 ## Current Status
@@ -112,6 +113,7 @@ This project demonstrates identity administration fundamentals, including:
 | User inventory documented | Complete |
 | Group inventory documented | Complete |
 | Role baseline documented | Complete |
+| Tenant settings reviewed | Complete |
 | Screenshots added | Complete |
 | Final validation completed | Planned |
 
