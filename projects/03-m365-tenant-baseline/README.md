@@ -163,7 +163,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Microsoft 365 admin center reviewed | Complete |
 | Tenant overview documented | Complete |
 | Admin center navigation documented | Complete |
-| Users and licenses reviewed | Planned |
+| Users and licenses reviewed | Complete |
 | Domains and organization profile reviewed | Planned |
 | Admin roles reviewed | Planned |
 | Groups and collaboration reviewed | Planned |
@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to review Microsoft 365 users, licenses, products, and subscription availability.
+The next step is to review Microsoft 365 domains and organization profile settings.
 
-This will document active users, licensed users, unlicensed users, available products, assigned licenses, license risks, and future PowerShell / Microsoft Graph reporting opportunities.
+This will document the tenant domain baseline, default domain context, organization profile, release preferences, and related enterprise considerations.
