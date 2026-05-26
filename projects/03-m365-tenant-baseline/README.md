@@ -162,7 +162,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Project README created | Complete |
 | Microsoft 365 admin center reviewed | Complete |
 | Tenant overview documented | Complete |
-| Admin center navigation documented | Planned |
+| Admin center navigation documented | Complete |
 | Users and licenses reviewed | Planned |
 | Domains and organization profile reviewed | Planned |
 | Admin roles reviewed | Planned |
@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to document Microsoft 365 admin center navigation.
+The next step is to review Microsoft 365 users, licenses, products, and subscription availability.
 
-This will map the major admin center sections, explain what each area is used for, identify which areas require deeper project coverage, and show how Microsoft 365 administration connects to Entra ID, Exchange, SharePoint, Teams, Intune, Purview, security, and Power Platform.
+This will document active users, licensed users, unlicensed users, available products, assigned licenses, license risks, and future PowerShell / Microsoft Graph reporting opportunities.
