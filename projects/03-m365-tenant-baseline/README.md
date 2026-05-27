@@ -165,7 +165,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Admin center navigation documented | Complete |
 | Users and licenses reviewed | Complete |
 | Domains and organization profile reviewed | Complete |
-| Admin roles reviewed | Planned |
+| Admin roles reviewed | Complete |
 | Groups and collaboration reviewed | Planned |
 | Service health and message center reviewed | Planned |
 | Reports and usage reviewed | Planned |
@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to review Microsoft 365 admin roles.
+The next step is to review Microsoft 365 groups and collaboration objects.
 
-This will document Microsoft 365 admin role assignments, role separation, least privilege considerations, workload-specific administrator roles, and future privileged access management opportunities.
+This will document Microsoft 365 groups, distribution lists, mail-enabled security groups, shared mailboxes, ownership, collaboration risks, and future governance considerations.
