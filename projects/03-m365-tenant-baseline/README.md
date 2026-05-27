@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to review Microsoft 365 domains and organization profile settings.
+The next step is to review Microsoft 365 admin roles.
 
-This will document the tenant domain baseline, default domain context, organization profile, release preferences, and related enterprise considerations.
+This will document Microsoft 365 admin role assignments, role separation, least privilege considerations, workload-specific administrator roles, and future privileged access management opportunities.
