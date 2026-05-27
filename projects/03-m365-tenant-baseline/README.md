@@ -164,7 +164,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Tenant overview documented | Complete |
 | Admin center navigation documented | Complete |
 | Users and licenses reviewed | Complete |
-| Domains and organization profile reviewed | Planned |
+| Domains and organization profile reviewed | Complete |
 | Admin roles reviewed | Planned |
 | Groups and collaboration reviewed | Planned |
 | Service health and message center reviewed | Planned |
