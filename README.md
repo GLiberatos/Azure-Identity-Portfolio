@@ -22,18 +22,22 @@ This portfolio is aligned with roles such as:
 
 This portfolio is organized into several Microsoft cloud and identity engineering tracks.
 
-| Track | Focus |
-|---|---|
-| Azure Governance | Cost controls, naming standards, tagging standards, policy, and operational structure |
-| Microsoft Entra ID | Users, groups, roles, Conditional Access, MFA, PIM, and Identity Governance |
-| Hybrid Identity | Active Directory, Entra Connect, sync validation, and source-of-authority concepts |
-| Microsoft 365 Administration | Tenant administration, Exchange Online, SharePoint Online, OneDrive, and service governance |
-| Endpoint Management | Intune, MDM, device enrollment, compliance policies, and device configuration |
-| Security and Monitoring | Audit review, sign-in logs, Microsoft Sentinel concepts, and security operations awareness |
-| Compliance and Data Governance | Microsoft Purview, HIPAA, GDPR, NIST, CIS, Zero Trust, retention, and data protection concepts |
-| Automation | PowerShell, Microsoft Graph, reporting, and repeatable administration |
-| AI-Aware Governance | Copilot readiness, AI access risks, data exposure, and identity governance |
-| IAM Platform Comparison | Okta AD integration and comparison with Microsoft Entra ID |
+| Track                                      | Focus                                                                                                                               |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Azure Governance                           | Cost controls, naming standards, tagging standards, RBAC, Azure Policy, management structure, and operational governance            |
+| Microsoft Entra ID                         | Users, groups, roles, Conditional Access, MFA, PIM, Identity Governance, least privilege, and identity security                     |
+| Hybrid Identity                            | Active Directory, Entra Connect, sync validation, source-of-authority design, and hybrid identity troubleshooting                   |
+| Microsoft 365 Administration               | Tenant administration, users, licenses, roles, domains, service health, Message center, reports, and workload admin centers         |
+| Exchange Online / Outlook                  | Mailboxes, shared mailboxes, mail flow, permissions, domains, and email security readiness                                          |
+| SharePoint, OneDrive, and Teams Governance | Sites, sharing, permissions, Microsoft 365 groups, collaboration governance, and SharePoint Advanced Management concepts            |
+| Endpoint Management                        | Intune, MDM, device enrollment, compliance policies, configuration profiles, security baselines, and endpoint governance            |
+| Security Monitoring                        | Microsoft Defender XDR, Microsoft Sentinel, KQL, audit review, sign-in logs, incidents, alerts, and security operations             |
+| Compliance and Data Governance             | Microsoft Purview, retention, DLP, sensitivity labels, audit, eDiscovery, HIPAA, GDPR, NIST, CIS, and Zero Trust mapping            |
+| Automation and Reporting                   | PowerShell, Microsoft Graph, Azure CLI, Bicep, ARM, CSV/JSON exports, reporting, and repeatable administration                      |
+| Azure Systems Engineering                  | Azure infrastructure, networking, VMs, monitoring, backup, Log Analytics, resource governance, and infrastructure automation        |
+| Power Platform and Agent Governance | Power Platform Admin Center, environments, DLP policies, connectors, Copilot Studio, Copilot agents, and agent lifecycle governance |
+| AI-Aware Governance                        | Copilot readiness, agent access risks, data exposure, permissions, auditability, and AI governance controls                         |
+| IAM Platform Comparison                    | Okta AD integration, delegated authentication, app assignment, and comparison with Microsoft Entra ID                               |
 
 ## Project Index
 
@@ -53,8 +57,8 @@ This portfolio is organized into several Microsoft cloud and identity engineerin
 | [Project 12 — PowerShell and Microsoft Graph Automation](projects/12-powershell-graph-automation/) | Planned | Reporting, administration, repeatable automation |
 | [Project 13 — Security Monitoring and Microsoft Sentinel](projects/13-security-monitoring-sentinel/) | Planned | Logs, alerts, sign-in review, Sentinel concepts, audit evidence |
 | [Project 14 — Microsoft Purview and Compliance Mapping](projects/14-purview-compliance-framework-mapping/) | Planned | Purview, HIPAA, GDPR, NIST, CIS, Zero Trust alignment |
-| [Project 15 — AI-Aware Identity and Governance](projects/15-ai-aware-identity-governance/) | Planned | Copilot readiness, AI access risks, identity governance |
-| [Project 16 — Power Platform Admin Center Governance](projects/16-power-platform-admin-center-governance/) | Planned | Environments, DLP policies, connectors, Power Platform governance |
+| [Project 15 — Copilot and Agent Governance Lab](projects/15-copilot-agent-governance-lab/) | Planned | Copilot readiness, Copilot agents, Copilot Studio awareness, agent lifecycle, data access, DLP, audit, permissions, and governance |
+| [Project 16 — Power Platform Admin Center and Copilot Studio Governance](projects/16-power-platform-copilot-studio-governance/) | Planned | Environments, DLP policies, connectors, Copilot Studio governance, agent controls, and Power Platform administration |
 | [Project 17 — Okta AD Integration and IAM Comparison](projects/17-okta-ad-integration-iam-comparison/) | Planned | Okta AD Agent, user/group import, delegated authentication, app assignment, IAM comparison |
 
 ## Lab Environment
@@ -72,6 +76,7 @@ This portfolio is organized into several Microsoft cloud and identity engineerin
 | Microsoft Purview | Compliance, data governance, audit, retention, and information protection concepts |
 | Microsoft Sentinel | Security monitoring, SIEM concepts, logs, analytics, and incident review |
 | Power Platform Admin Center | Power Platform environments, DLP policies, connectors, and governance |
+| Copilot Studio | Custom agents, agent development, and agent governance labs |
 | Active Directory Domain Services | Hybrid identity lab environment |
 | Entra Connect | Directory synchronization testing |
 | GitHub | Public portfolio documentation |
@@ -140,12 +145,20 @@ Screenshots are sanitized before being published.
 
 ## Current Active Project
 
-| Item | Status |
-|---|---|
-| Active project | Project 03 — Microsoft 365 Tenant Baseline |
-| Project planning | Planned |
-| Microsoft 365 admin center review | Planned |
-| Users and licenses review | Planned |
-| Service health review | Planned |
-| Screenshots and validation | Planned |
-| Lessons learned | Planned |
+| Item                                     | Status                                     |
+| ---------------------------------------- | ------------------------------------------ |
+| Active project                           | Project 03 — Microsoft 365 Tenant Baseline |
+| Project planning                         | Complete                                   |
+| Microsoft 365 tenant overview            | Complete                                   |
+| Microsoft 365 admin center navigation    | Complete                                   |
+| Users and licenses review                | Complete                                   |
+| Domains and organization profile review  | Complete                                   |
+| Admin roles review                       | In Progress                                |
+| Groups and collaboration review          | Planned                                    |
+| Service health and Message center review | Planned                                    |
+| Reports and usage review                 | Planned                                    |
+| Organization settings review             | Planned                                    |
+| PowerShell and Microsoft Graph reporting | Planned                                    |
+| Security and risk findings               | Planned                                    |
+| Enterprise administration model          | Planned                                    |
+| Final validation                         | Planned                                    |
