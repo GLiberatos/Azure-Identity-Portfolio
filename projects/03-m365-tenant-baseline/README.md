@@ -166,7 +166,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Users and licenses reviewed | Complete |
 | Domains and organization profile reviewed | Complete |
 | Admin roles reviewed | Complete |
-| Groups and collaboration reviewed | Planned |
+| Groups and collaboration reviewed | Complete |
 | Service health and message center reviewed | Planned |
 | Reports and usage reviewed | Planned |
 | Organization settings reviewed | Planned |
@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to review Microsoft 365 groups and collaboration objects.
+The next step is to review Microsoft 365 service health and Message center.
 
-This will document Microsoft 365 groups, distribution lists, mail-enabled security groups, shared mailboxes, ownership, collaboration risks, and future governance considerations.
+This will document current service health, advisories, Message center updates, Microsoft-driven change awareness, operational monitoring, and enterprise communication considerations.
