@@ -12,37 +12,37 @@ Microsoft 365 reports help administrators understand how users are using Microso
 
 Reports can support:
 
-* License review
-* Adoption tracking
-* Service usage analysis
-* Cleanup planning
-* Support readiness
-* Collaboration governance
-* Security and compliance awareness
-* Copilot and agent readiness planning
-* Automation and executive reporting
+- License review
+- Adoption tracking
+- Service usage analysis
+- Cleanup planning
+- Support readiness
+- Collaboration governance
+- Security and compliance awareness
+- Copilot and agent readiness planning
+- Automation and executive reporting
 
 A reports and usage review helps answer:
 
-* Which reports are available?
-* Which Microsoft 365 services show usage data?
-* Are reports anonymized or user-identifiable?
-* Are export options available?
-* What reports can support license or adoption decisions?
-* What reports should later be automated with Microsoft Graph?
-* How can reports support Copilot and agent governance?
+- Which reports are available?
+- Which Microsoft 365 services show usage data?
+- Are reports anonymized or user-identifiable?
+- Are export options available?
+- What reports can support license or adoption decisions?
+- What reports should later be automated with Microsoft Graph?
+- How can reports support Copilot and agent governance?
 
 ## Relationship to Prior Work
 
 Project 03 has already documented:
 
-* Microsoft 365 tenant context
-* Microsoft 365 admin center navigation
-* Users and licenses
-* Domains and organization profile
-* Microsoft 365 admin roles
-* Microsoft 365 groups and collaboration objects
-* Service health and Message center
+- Microsoft 365 tenant context
+- Microsoft 365 admin center navigation
+- Users and licenses
+- Domains and organization profile
+- Microsoft 365 admin roles
+- Microsoft 365 groups and collaboration objects
+- Service health and Message center
 
 This file builds on that work by reviewing Microsoft 365 usage visibility and reporting readiness.
 
@@ -52,27 +52,27 @@ This does not repeat the users, licenses, or groups baseline. Instead, it focuse
 
 ### In Scope
 
-* Microsoft 365 Reports > Usage
-* Available report categories
-* Active users report
-* Service-specific usage reports
-* Report date ranges
-* Export visibility
-* Report privacy/anonymization setting review
-* Copilot-related reports, if visible
-* Operational reporting value
-* Future Microsoft Graph reporting opportunities
+- Microsoft 365 Reports > Usage
+- Available report categories
+- Active users report
+- Service-specific usage reports
+- Report date ranges
+- Export visibility
+- Report privacy/anonymization setting review
+- Copilot-related reports, if visible
+- Operational reporting value
+- Future Microsoft Graph reporting opportunities
 
 ### Out of Scope
 
-* Changing report privacy settings
-* Publishing user-level activity data
-* Exporting unsanitized user activity reports
-* Configuring Power BI usage analytics
-* Building dashboards
-* Configuring Copilot
-* Configuring agents
-* Configuring Purview audit or retention
+- Changing report privacy settings
+- Publishing user-level activity data
+- Exporting unsanitized user activity reports
+- Configuring Power BI usage analytics
+- Building dashboards
+- Configuring Copilot
+- Configuring agents
+- Configuring Purview audit or retention
 
 ## Reports and Usage Summary
 
@@ -126,16 +126,16 @@ Future automation using Microsoft Graph reports APIs should be used to validate 
 
 Do not expose:
 
-* User names
-* Group names
-* Site names
-* User principal names
-* Email addresses
-* Tenant domain
-* User activity details
-* Site URLs
-* Private business usage patterns
-* Unsanitized CSV exports
+- User names
+- Group names
+- Site names
+- User principal names
+- Email addresses
+- Tenant domain
+- User activity details
+- Site URLs
+- Private business usage patterns
+- Unsanitized CSV exports
 
 ## Initial Findings
 
@@ -182,13 +182,13 @@ As Microsoft 365 Copilot, Copilot Studio, SharePoint agents, and agent-based wor
 
 Important future considerations include:
 
-* Are Copilot readiness or usage reports available?
-* Are users actively using services that may provide data context for Copilot or agents?
-* Are Teams, SharePoint, and OneDrive usage patterns understood before enabling AI-driven features?
-* Are reports anonymized or user-identifiable?
-* Can reports help identify adoption gaps or unused licenses?
-* Can Graph exports support repeatable Copilot readiness reviews?
-* Are reporting responsibilities assigned to the correct admins?
+- Are Copilot readiness or usage reports available?
+- Are users actively using services that may provide data context for Copilot or agents?
+- Are Teams, SharePoint, and OneDrive usage patterns understood before enabling AI-driven features?
+- Are reports anonymized or user-identifiable?
+- Can reports help identify adoption gaps or unused licenses?
+- Can Graph exports support repeatable Copilot readiness reviews?
+- Are reporting responsibilities assigned to the correct admins?
 
 This file does not configure Copilot or agents, but it identifies Microsoft 365 reports as a future input for Copilot and agent governance.
 
@@ -198,16 +198,16 @@ In an enterprise environment, Microsoft 365 reports should be reviewed regularly
 
 Important considerations include:
 
-* Who reviews Microsoft 365 usage reports?
-* Who can access user-level reporting?
-* Are reports anonymized by default?
-* Are report exports protected?
-* Are usage reports used for license optimization?
-* Are low-usage services reviewed before renewals?
-* Are adoption trends reviewed for Teams, SharePoint, OneDrive, Exchange, and Microsoft 365 Apps?
-* Are Copilot readiness and usage reports reviewed before AI rollout?
-* Are exported reports stored securely?
-* Are reports used to support governance, security, compliance, and operations?
+- Who reviews Microsoft 365 usage reports?
+- Who can access user-level reporting?
+- Are reports anonymized by default?
+- Are report exports protected?
+- Are usage reports used for license optimization?
+- Are low-usage services reviewed before renewals?
+- Are adoption trends reviewed for Teams, SharePoint, OneDrive, Exchange, and Microsoft 365 Apps?
+- Are Copilot readiness and usage reports reviewed before AI rollout?
+- Are exported reports stored securely?
+- Are reports used to support governance, security, compliance, and operations?
 
 ## PowerShell and Microsoft Graph Opportunities
 
@@ -241,17 +241,17 @@ Possible future automation tasks:
 
 ## Reflection Questions
 
-* What is the purpose of Microsoft 365 usage reports?
-* How can usage reports help with license optimization?
-* Why should active users, service usage, and license assignment be reviewed together?
-* What is the difference between a report dashboard and an exported report?
-* Why do report privacy and anonymization settings matter?
-* How can reports help identify low adoption or unused services?
-* Which Microsoft 365 workloads should be reviewed through reports before deeper governance work?
-* Why are SharePoint, OneDrive, and Teams reports important for Copilot and agent readiness?
-* What Microsoft Graph report exports would be useful for repeatable reporting?
-* How would you explain Microsoft 365 usage reporting to a hiring manager?
-* How does this file build on the users/licenses and groups/collaboration files?
+- What is the purpose of Microsoft 365 usage reports?
+- How can usage reports help with license optimization?
+- Why should active users, service usage, and license assignment be reviewed together?
+- What is the difference between a report dashboard and an exported report?
+- Why do report privacy and anonymization settings matter?
+- How can reports help identify low adoption or unused services?
+- Which Microsoft 365 workloads should be reviewed through reports before deeper governance work?
+- Why are SharePoint, OneDrive, and Teams reports important for Copilot and agent readiness?
+- What Microsoft Graph report exports would be useful for repeatable reporting?
+- How would you explain Microsoft 365 usage reporting to a hiring manager?
+- How does this file build on the users/licenses and groups/collaboration files?
 
 ## Lessons Learned
 

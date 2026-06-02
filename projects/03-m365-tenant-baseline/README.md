@@ -168,7 +168,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Admin roles reviewed | Complete |
 | Groups and collaboration reviewed | Complete |
 | Service health and message center reviewed | Complete |
-| Reports and usage reviewed | Planned |
+| Reports and usage reviewed | Complete |
 | Organization settings reviewed | Planned |
 | PowerShell / Graph reporting reviewed | Planned |
 | Security and risk findings documented | Planned |
@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to review Microsoft 365 reports and usage baseline.
+The next step is to review Microsoft 365 organization settings.
 
-This will document available Microsoft 365 usage reports, reporting categories, adoption visibility, privacy considerations, operational value, and future PowerShell / Microsoft Graph reporting opportunities.
+This will document tenant-wide organization settings, service settings, risk-sensitive options, Copilot and agent-related settings awareness, and future governance considerations.
