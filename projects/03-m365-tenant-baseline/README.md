@@ -167,7 +167,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Domains and organization profile reviewed | Complete |
 | Admin roles reviewed | Complete |
 | Groups and collaboration reviewed | Complete |
-| Service health and message center reviewed | Planned |
+| Service health and message center reviewed | Complete |
 | Reports and usage reviewed | Planned |
 | Organization settings reviewed | Planned |
 | PowerShell / Graph reporting reviewed | Planned |
@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to review Microsoft 365 service health and Message center.
+The next step is to review Microsoft 365 reports and usage baseline.
 
-This will document current service health, advisories, Message center updates, Microsoft-driven change awareness, operational monitoring, and enterprise communication considerations.
+This will document available Microsoft 365 usage reports, reporting categories, adoption visibility, privacy considerations, operational value, and future PowerShell / Microsoft Graph reporting opportunities.
