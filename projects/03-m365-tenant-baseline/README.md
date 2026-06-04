@@ -170,7 +170,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Service health and message center reviewed | Complete |
 | Reports and usage reviewed | Complete |
 | Organization settings reviewed | Complete |
-| PowerShell / Graph reporting reviewed | Planned |
+| PowerShell / Graph reporting reviewed | Complete |
 | Security and risk findings documented | Planned |
 | Enterprise administration model documented | Planned |
 | Final validation completed | Planned |
@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to perform Microsoft 365 PowerShell and Microsoft Graph reporting.
+The next step is to document Microsoft 365 security and risk findings.
 
-This will validate selected portal findings through automation, export users, licenses, groups, roles, and service information, and prepare repeatable reporting evidence for the tenant baseline.
+This will summarize the key risks, observations, gaps, and future improvement backlog identified during the Microsoft 365 tenant baseline.
