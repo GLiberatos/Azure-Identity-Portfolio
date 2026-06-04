@@ -1,1 +1,6 @@
-*.csv
+m365-active-user-detail-d30.csv
+m365-directory-role-members.csv
+m365-directory-roles.csv
+m365-groups.csv
+m365-organization-summary.csv
+m365-subscribed-skus.csv
