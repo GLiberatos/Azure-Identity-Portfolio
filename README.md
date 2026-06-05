@@ -143,22 +143,20 @@ No production data, customer data, passwords, secrets, tenant IDs, subscription 
 
 Screenshots are sanitized before being published.
 
-## Current Active Project
-
-| Item                                     | Status                                     |
-| ---------------------------------------- | ------------------------------------------ |
-| Active project                           | Project 03 — Microsoft 365 Tenant Baseline |
-| Project planning                         | Complete                                   |
-| Microsoft 365 tenant overview            | Complete                                   |
-| Microsoft 365 admin center navigation    | Complete                                   |
-| Users and licenses review                | Complete                                   |
-| Domains and organization profile review  | Complete                                   |
-| Admin roles review                       | In Progress                                |
-| Groups and collaboration review          | Planned                                    |
-| Service health and Message center review | Planned                                    |
-| Reports and usage review                 | Planned                                    |
-| Organization settings review             | Planned                                    |
-| PowerShell and Microsoft Graph reporting | Planned                                    |
-| Security and risk findings               | Planned                                    |
-| Enterprise administration model          | Planned                                    |
-| Final validation                         | Planned                                    |
+| Item | Status |
+|---|---|
+| Active project | Project 03 — Microsoft 365 Tenant Baseline |
+| Project planning | Complete |
+| Microsoft 365 tenant overview | Complete |
+| Microsoft 365 admin center navigation | Complete |
+| Users and licenses review | Complete |
+| Domains and organization profile review | Complete |
+| Admin roles review | Complete |
+| Groups and collaboration review | Complete |
+| Service health and Message Center review | Complete |
+| Reports and usage review | Complete |
+| Organization settings review | Complete |
+| PowerShell and Microsoft Graph reporting | Complete |
+| Security and risk findings | In Progress |
+| Enterprise administration model | Planned |
+| Final validation | Planned |
