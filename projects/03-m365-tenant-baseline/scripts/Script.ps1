@@ -91,3 +91,72 @@ Get-MgReportOffice365ActiveUserDetail -Period D30 -OutFile "$ReportsPath\m365-ac
 
 # M365 Teams usage Report
 Get-MgReportTeamUserActivityUserDetail -Period D30 -OutFile "$ReportsPath\m365-teams-user-activity-d30.csv"
+
+# Load Users into memory
+$Users = Get-MgUser -All -Property Id,DisplayName,UserPrincipalName,UserType,AccountEnabled,AssignedLicenses,CreatedDateTime
+
+# Export Unlicensed Users
+$UnlicensedUsers = $Users |
+Where-Object { $_.AssignedLicenses.Count -eq 0 } |
+Select-Object DisplayName, UserPrincipalName, UserType, AccountEnabled, CreatedDateTime
+
+$UnlicensedUsers |
+Export-Csv -Path "$ReportsPath\m365-unlicensed-users.csv" -NoTypeInformation
+
+$UnlicensedUsers.Count
+
+# Export Guest Users
+$GuestUsers = $Users | 
+Where-Object {$_.UserType -eq "Guest"}
+Select-Object DisplayName, UserPrincipalName, AccountEnabled, CreatedDateTime
+
+$GuestUsers |
+Export-Csv -Path "$ReportsPath\m365-guest-users.csv" -NoTypeInformation
+
+$GuestUsers.Count
+
+# Groups 
+$Groups = Get-MgGroup -All -Property Id, DisplayName, GroupTypes, MailEnabled, SecurityEnabled, Visibility, OnPremisesSyncEnabled
+
+#Groups Without Owners
+$GroupsWithoutOwners = foreach ($Group in $Groups) {
+    $Owners = @(Get-MgGroupOwner -GroupId $Group.Id -ErrorAction SilentlyContinue)
+
+    if ($Owners.Count -eq 0) {
+        [PSCustomObject]@{
+            DisplayName = $Group.DisplayName
+            GroupId = $Group.Id
+            GroupTypes = ($Group.GroupTypes -join ";")
+            MailEnabled = $Group.MailEnabled
+            SecurityEnabled = $Group.SecurityEnabled
+            Visibility = $Group.Visibility
+            OnPremisesSyncEnabled = $Group.OnPremisesSyncEnabled
+        }
+    }
+}
+
+$GroupsWithoutOwners |
+Export-Csv -Path "$ReportsPath\m365-groups-without-owners.csv" -NoTypeInformation
+
+$GroupsWithoutOwners.Count
+
+#Groups with Sync Status
+$GroupSyncSummary = $groups | group-object OnPremisesSyncEnabled | Select-Object Name, Count
+
+$GroupSyncSummary
+
+# Admin Role Summary
+$RoleSummary = foreach ($Role in Get-MgDirectoryRole) {
+    $Members = @(Get-MgDirectoryRoleMember -DirectoryRoleId $Role.Id -ErrorAction SilentlyContinue)
+
+    [PSCustomObject]@{
+        RoleName = $Role.DisplayName
+        MemberCount = $Members.Count
+    }
+}
+
+$RoleSummary |
+Sort-Object MemberCount -Descending |
+Export-Csv -Path "$ReportsPath\m365-admin-role-summary.csv" -NoTypeInformation
+
+$RoleSummary | Sort-Object MemberCount -Descending | Out-GridView

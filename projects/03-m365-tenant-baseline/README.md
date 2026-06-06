@@ -171,7 +171,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Reports and usage reviewed | Complete |
 | Organization settings reviewed | Complete |
 | PowerShell / Graph reporting reviewed | Complete |
-| Security and risk findings documented | Planned |
+| Security and risk findings documented | Complete |
 | Enterprise administration model documented | Planned |
 | Final validation completed | Planned |
 
@@ -226,6 +226,6 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to document Microsoft 365 security and risk findings.
+The next step is to document the enterprise Microsoft 365 administration model.
 
-This will summarize the key risks, observations, gaps, and future improvement backlog identified during the Microsoft 365 tenant baseline.
+This will define how Microsoft 365 administration responsibilities, workload ownership, role separation, monitoring, automation, change management, and governance would be handled in an enterprise environment.
