@@ -46,7 +46,6 @@ This project will review and document:
 - Organization settings
 - Linked admin centers
 - Security and risk findings
-- Enterprise administration model
 - PowerShell / Microsoft Graph reporting opportunities
 - Future improvement backlog
 
@@ -114,9 +113,9 @@ This mirrors a real-world onboarding or tenant assessment task.
 - Reports overview
 - Organization settings review
 - Security and risk findings
-- Enterprise administration model
 - PowerShell / Microsoft Graph reporting opportunities
-- Sanitized screenshots
+- Security and risk findings
+- Sanitized evidence only when required
 
 ### Out of Scope for Project 03
 
@@ -148,10 +147,8 @@ The following areas will be reviewed only at a high level and will be handled in
 | 08-reports-and-usage-baseline.md | Documents reports and usage visibility |
 | 09-org-settings-review.md | Documents Microsoft 365 organization settings |
 | 10-powershell-graph-reporting.md | Documents PowerShell and Microsoft Graph reporting opportunities |
-| 11-security-risk-findings.md | Documents risks, findings, and future improvement backlog |
-| 12-enterprise-administration-model.md | Documents enterprise Microsoft 365 administration model |
-| 13-final-validation.md | Documents final validation and project completion checklist |
-| screenshots/ | Stores sanitized screenshots for documentation |
+| 11-security-risk-findings.md | Documents risks, findings, PowerShell validation, and future improvement backlog |
+| screenshots/ | Stores sanitized screenshots only when required |
 | reports/ | Stores exported reports if PowerShell / Graph reporting is used |
 
 ## Current Status
@@ -172,8 +169,7 @@ The following areas will be reviewed only at a high level and will be handled in
 | Organization settings reviewed | Complete |
 | PowerShell / Graph reporting reviewed | Complete |
 | Security and risk findings documented | Complete |
-| Enterprise administration model documented | Planned |
-| Final validation completed | Planned |
+| Project 03 completed | Complete |
 
 ## Documentation Standards
 
@@ -201,7 +197,7 @@ Each area will include:
 - What was reviewed
 - Why it matters
 - What was observed
-- What screenshots were captured
+- What evidence was captured through portal review, PowerShell, Microsoft Graph, or screenshots only when necessary
 - What risks were identified
 - What should be reviewed in a production environment
 - What can be automated later with PowerShell or Microsoft Graph
@@ -226,6 +222,10 @@ Microsoft 365 tenant administration connects to several future portfolio areas:
 
 ## Next Steps
 
-The next step is to document the enterprise Microsoft 365 administration model.
+Project 03 is complete.
 
-This will define how Microsoft 365 administration responsibilities, workload ownership, role separation, monitoring, automation, change management, and governance would be handled in an enterprise environment.
+The next project will move into a new technical area instead of continuing to summarize Microsoft 365 baseline findings.
+
+Next planned project: Project 04 — Hybrid Identity Lab.
+
+This project will introduce Active Directory Domain Services, domain controller setup, DNS, organizational units, users, groups, synchronization planning, Entra Connect, source-of-authority concepts, and hybrid identity validation.
