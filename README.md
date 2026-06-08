@@ -45,7 +45,7 @@ This portfolio is organized into several Microsoft cloud and identity engineerin
 |---|---|---|
 | [Project 01 — Azure Cost Governance & Portfolio Foundation](projects/01-azure-cost-governance/) | Complete | Naming, tagging, cost governance, documentation |
 | [Project 02 — Entra Tenant Baseline](projects/02-entra-tenant-baseline/) | Complete | Users, groups, roles, tenant structure |
-| [Project 03 — Microsoft 365 Tenant Baseline](projects/03-m365-tenant-baseline/) | In Progress | M365 admin center, users, licenses, service settings |
+| [Project 03 — Microsoft 365 Tenant Baseline](projects/03-m365-tenant-baseline/) | Complete | M365 admin center, users, licenses, roles, service health, reports, org settings, PowerShell / Graph reporting, and security risk findings |
 | [Project 04 — Hybrid Identity Lab](projects/04-hybrid-identity-lab/) | Planned | AD DS, Entra Connect, sync validation |
 | [Project 05 — Conditional Access Lab](projects/05-entra-conditional-access-lab/) | Planned | MFA, named locations, access controls |
 | [Project 06 — Intune / Endpoint Management Lab](projects/06-intune-endpoint-management-lab/) | Planned | MDM, device enrollment, compliance policies |
@@ -125,7 +125,7 @@ Each project may include:
 - Environment
 - Implementation steps
 - Validation steps
-- Screenshots
+- Screenshots only when required to prove a setting, result, or issue
 - Troubleshooting notes
 - Security considerations
 - Lessons learned
@@ -141,11 +141,13 @@ I also share project progress and lessons learned on LinkedIn as part of this po
 
 No production data, customer data, passwords, secrets, tenant IDs, subscription IDs, personal billing details, or private information are included in this repository.
 
-Screenshots are sanitized before being published.
+Screenshots are used only when necessary and are sanitized before being published.
+
+## Current Active Project
 
 | Item | Status |
 |---|---|
-| Active project | Project 03 — Microsoft 365 Tenant Baseline |
+| Last completed project | Project 03 — Microsoft 365 Tenant Baseline |
 | Project planning | Complete |
 | Microsoft 365 tenant overview | Complete |
 | Microsoft 365 admin center navigation | Complete |
@@ -157,6 +159,6 @@ Screenshots are sanitized before being published.
 | Reports and usage review | Complete |
 | Organization settings review | Complete |
 | PowerShell and Microsoft Graph reporting | Complete |
-| Security and risk findings | In Progress |
-| Enterprise administration model | Planned |
-| Final validation | Planned |
+| Security and risk findings | Complete |
+| Project 03 status | Complete |
+| Next planned project | Project 04 — Hybrid Identity Lab |
