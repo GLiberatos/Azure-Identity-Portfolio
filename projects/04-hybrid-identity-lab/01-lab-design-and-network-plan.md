@@ -17,6 +17,7 @@ This file introduces the foundation pieces that Active Directory depends on:
 - Why domain clients should use the domain controller for DNS
 - Why `.local` works internally but requires planning before Microsoft Entra ID synchronization
 - How to validate local name registration with command-line tools
+- How to troubleshoot a DNS health warning with `dcdiag`
 
 ## Relationship to Prior Work
 
@@ -38,6 +39,8 @@ Project 04 now moves into the on-premises identity side by building and validati
 - Default gateway
 - Basic name validation
 - Basic network validation
+- DNS forwarder validation
+- DNS health validation
 - Hybrid identity namespace planning
 
 ### Out of Scope
@@ -70,7 +73,9 @@ Project 04 now moves into the on-premises identity side by building and validati
 | Network Address | 192.168.50.0 |
 | Default Gateway | 192.168.50.1 |
 | DNS Server on Domain Controller | 127.0.0.1 |
+| Alternate DNS Server on Domain Controller | 192.168.50.90 |
 | Recommended DNS for Domain Clients | 192.168.50.90 |
+| DNS Forwarder | 192.168.50.1 |
 
 ## Naming Plan
 
@@ -153,8 +158,8 @@ This will be handled later during Microsoft Entra Connect or Microsoft Entra Clo
 | Network Address | 192.168.50.0 |
 | Default Gateway | 192.168.50.1 |
 | DNS Server on DC | 127.0.0.1 |
-| Additional DNS Server Currently Observed | 192.168.50.1 |
-| Recommended DNS for Domain Clients | 192.168.50.90 |
+| Alternate DNS Server on DC | 192.168.50.90 |
+| Router DNS / Forwarder | 192.168.50.1 |
 
 ## DNS Design
 
@@ -168,10 +173,11 @@ Domain controllers register DNS records that allow domain-joined computers to lo
 - Global catalog services
 - Domain resources
 
-On the domain controller, DNS may point to the local server using loopback:
+On the domain controller, DNS is configured to use:
 
 ```text
 127.0.0.1
+192.168.50.90
 ```
 
 Domain clients should use the domain controller IP address for DNS:
@@ -182,7 +188,7 @@ Domain clients should use the domain controller IP address for DNS:
 
 Using an external DNS server directly on a domain-joined client can prevent the client from locating the domain controller.
 
-The router DNS address `192.168.50.1` should be used as a DNS forwarder inside the DNS Server role, not as the preferred DNS path for domain clients.
+The router DNS address `192.168.50.1` is used as a DNS forwarder inside the DNS Server role for external name resolution.
 
 ## Current Validation Evidence
 
@@ -215,7 +221,7 @@ Key observed values:
 | IPv4 Address | 192.168.50.90 |
 | Subnet Mask | 255.255.255.0 |
 | Default Gateway | 192.168.50.1 |
-| DNS Servers | 127.0.0.1, 192.168.50.1 |
+| DNS Servers | 127.0.0.1, 192.168.50.90 |
 | NetBIOS over TCP/IP | Enabled |
 
 The following command was used to validate local NetBIOS name registration:
@@ -261,30 +267,60 @@ Node IpAddress: [192.168.50.90] Scope Id: []
 | Subnet mask | `255.255.255.0` configured | Passed |
 | Default gateway | `192.168.50.1` configured | Passed |
 | DNS server on DC | `127.0.0.1` configured | Passed |
-| Additional DNS server | `192.168.50.1` configured as router DNS | Review recommended |
+| Alternate DNS server | `192.168.50.90` configured | Passed |
 | Domain DNS lookup | `iron.local` resolves to `192.168.50.90` | Passed |
 | Gateway connectivity | Ping to `192.168.50.1` successful with `0%` loss | Passed |
 | Domain controller IP connectivity | Ping to `192.168.50.90` successful with `0%` loss | Passed |
+| DNS health check | `dcdiag /test:dns /v` passed after DNS registration and Netlogon restart | Passed |
 
 ## DNS Forwarder Review
 
 DNS forwarders were reviewed on the domain controller.
 
-The router DNS forwarder was present:
+The router DNS forwarder is configured as:
 
 ```text
 192.168.50.1
 ```
 
-An unexpected DNS forwarder was also observed:
+An unexpected DNS forwarder was previously observed:
 
 ```text
 192.168.124.90
 ```
 
-That address is not part of the current `192.168.50.0/24` lab subnet.
+That address was not part of the current `192.168.50.0/24` lab subnet and was removed from DNS forwarders.
 
-This should be removed from DNS forwarders unless it is later confirmed to be part of another valid lab DNS path.
+The final DNS forwarder configuration uses the lab router DNS address for external name resolution, while the domain controller continues to use AD-integrated DNS for domain services.
+
+## DNS Health Check
+
+The command `dcdiag /test:dns /v` was used to validate DNS health.
+
+The first DNS health check returned a warning related to DNS RPC connectivity.
+
+Follow-up remediation steps were performed:
+
+```cmd
+ipconfig /registerdns
+net stop netlogon
+net start netlogon
+```
+
+After registering DNS records and restarting Netlogon, `dcdiag /test:dns /v` passed.
+
+Validated results included:
+
+| DNS Validation Item | Result |
+|---|---|
+| DNS service running | Passed |
+| DC is a DNS server | Passed |
+| DNS servers on NIC | `127.0.0.1` and `192.168.50.90` valid |
+| DNS forwarder | `192.168.50.1` valid |
+| Delegation test | Passed |
+| Dynamic update test | Passed |
+| Records registration test | Passed |
+| Final DNS summary | `PASS PASS PASS PASS PASS PASS n/a` |
 
 ## Initial Findings
 
@@ -300,8 +336,12 @@ This should be removed from DNS forwarders unless it is later confirmed to be pa
 - DNS resolution for `iron.local` successfully returns `192.168.50.90`.
 - Gateway connectivity to `192.168.50.1` is successful.
 - Local domain controller IP connectivity to `192.168.50.90` is successful.
-- The domain controller currently lists `192.168.50.1` as an additional DNS server on the NIC. This should be reviewed because AD DS should rely on AD-integrated DNS, while internet DNS should be handled through DNS Server forwarders.
-- An unexpected DNS forwarder, `192.168.124.90`, was observed and should be removed if it is not part of a valid lab DNS path.
+- The domain controller NIC DNS configuration was updated to use `127.0.0.1` and `192.168.50.90`, keeping DNS resolution aligned to the domain controller.
+- The router DNS address `192.168.50.1` is configured as a DNS Server forwarder for external name resolution.
+- An unexpected DNS forwarder, `192.168.124.90`, was identified and removed because it was not part of the current lab subnet.
+- DNS records were re-registered using `ipconfig /registerdns`.
+- The Netlogon service was restarted to refresh domain controller DNS registration.
+- `dcdiag /test:dns /v` passed after DNS remediation.
 - The `.local` AD domain works for the internal lab, but UPN suffix planning will be required before Microsoft Entra ID synchronization.
 
 ## Validation Commands
@@ -344,6 +384,12 @@ ping 192.168.50.1
 ping 192.168.50.90
 ```
 
+### Validate DNS health
+
+```cmd
+dcdiag /test:dns /v
+```
+
 ## Troubleshooting Notes
 
 | Issue | Possible Cause | Validation |
@@ -356,6 +402,7 @@ ping 192.168.50.90
 | Wrong domain shown | Domain join or promotion issue | Run `systeminfo` or check domain properties |
 | Domain controller has router listed as secondary NIC DNS | Router DNS may not understand AD DS records | Use the DC itself for DNS and configure router DNS as a DNS Server forwarder |
 | Unexpected DNS forwarder appears | Old lab network, previous IP configuration, or accidental entry | Confirm the subnet and remove if not required |
+| `dcdiag /test:dns` shows DNS RPC warning | DNS records or Netlogon registration may need refresh | Run `ipconfig /registerdns`, restart Netlogon, then re-run `dcdiag /test:dns /v` |
 
 ## What This Builds Toward
 
@@ -397,6 +444,8 @@ This lab design prepares for:
 - What is a UPN suffix?
 - What is source of authority in hybrid identity?
 - Why should network settings be validated before installing or troubleshooting AD DS?
+- What does `dcdiag /test:dns` validate?
+- Why can restarting Netlogon refresh domain controller DNS records?
 
 ## Lessons Learned
 
@@ -406,4 +455,6 @@ This lab design prepares for:
 - Domain clients should use the domain controller for DNS resolution.
 - Router DNS can still be useful as a DNS forwarder, but it should not replace AD DNS for domain services.
 - A `.local` AD domain can work internally, but Microsoft Entra ID synchronization requires planning for user sign-in names and verified tenant domains.
-- Command-line validation helps confirm server identity, network configuration, and domain name registration before deeper configuration begins.
+- `dcdiag /test:dns /v` provides deeper DNS health validation than basic name resolution alone.
+- Re-registering DNS records and restarting Netlogon can refresh domain controller DNS registration.
+- Command-line validation helps confirm server identity, network configuration, DNS health, and domain name registration before deeper configuration begins.

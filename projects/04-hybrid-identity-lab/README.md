@@ -124,11 +124,11 @@ The real tenant domain is not published in this repository and is documented onl
 |---|---|
 | Project folder created | Complete |
 | Project README created | Complete |
-| Lab design completed | In Progress |
-| Windows Server VM prepared | In Progress |
+| Lab design completed | Complete |
+| Windows Server VM prepared | Complete |
 | AD DS installed | Planned |
 | Domain controller promoted | Planned |
-| DNS validated | Planned |
+| DNS validated | Complete |
 | OUs created | Planned |
 | Users and groups created | Planned |
 | Group Policy basics reviewed | Planned |
@@ -156,6 +156,6 @@ Do not expose:
 
 ## Next Steps
 
-The next step is to document the lab design and network plan.
+The next step is to document the Windows Server domain controller build.
 
-This includes validating the domain name, server name, IP address plan, DNS design, and the initial Active Directory structure.
+This includes reviewing the Windows Server configuration, Active Directory Domain Services role installation, domain controller promotion, DNS validation, and post-promotion health checks.
