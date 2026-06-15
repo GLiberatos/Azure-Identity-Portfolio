@@ -1,460 +1,174 @@
-# Hybrid Identity Lab Design and Network Plan
+# Project 04 — Module 01: Lab Design and Network Plan
 
-## Purpose
+## 🎯 Purpose
 
-This document defines the lab design and network plan for the Hybrid Identity Lab.
+This module establishes the foundational network architecture and identity routing design for a secure, isolated hybrid identity lab.
 
-The purpose is to document the virtualization platform, server naming, Active Directory domain name, NetBIOS domain name, IP addressing, DNS configuration, and initial validation evidence before deeper Active Directory and hybrid identity configuration.
+By architecting an isolated virtual network, the local Active Directory Domain Services (AD DS) environment can communicate with the internet to sync with Microsoft Entra ID without causing routing conflicts with the physical host network.
 
-## What This File Teaches
+---
 
-This file introduces the foundation pieces that Active Directory depends on:
+## 🧠 What This Lab Teaches
 
-- VM name vs Windows hostname
-- AD DNS domain name vs NetBIOS domain name
-- Static IP addressing for a domain controller
-- DNS requirements for Active Directory
-- Why domain clients should use the domain controller for DNS
-- Why `.local` works internally but requires planning before Microsoft Entra ID synchronization
-- How to validate local name registration with command-line tools
-- How to troubleshoot a DNS health warning with `dcdiag`
+- 🌐 Hypervisor Network Virtualization: Configuring custom Network Address Translation (NAT) subnets within VMware.
+- 🔢 Hybrid Subnet Planning: Preventing overlapping IP space conflicts between home and lab networks.
+- 🆔 Identity Routing Design: Evaluating the impact of non-routable top-level domains, such as `.local`, on cloud synchronization and planning alternative User Principal Name (UPN) suffixes.
 
-## Relationship to Prior Work
+---
 
-Project 03 documented the Microsoft 365 tenant baseline from the cloud administration side.
+## 🛑 Before You Start
 
-Project 04 now moves into the on-premises identity side by building and validating the Active Directory foundation that will later connect to Microsoft Entra ID.
+- 💻 Hypervisor Platform: VMware Workstation or VMware ESXi 8 installed on the host machine.
+- 🗺️ Host Network Awareness: Identified the physical local subnet, such as `192.168.50.0/24`, to ensure the lab subnet does not overlap.
+- ☁️ Cloud Tenant Suffix: Access to the Microsoft Entra ID tenant domain prefix, `xkdk1.onmicrosoft.com`.
 
-## Review Scope
+---
 
-### In Scope
+## 🖱️ GUI Build Steps
 
-- Virtualization platform
-- Domain controller VM name
-- Windows hostname
-- Active Directory domain name
-- NetBIOS domain name
-- IP address plan
-- DNS configuration
-- Default gateway
-- Basic name validation
-- Basic network validation
-- DNS forwarder validation
-- DNS health validation
-- Hybrid identity namespace planning
+### Step 1: Configure the VMware Virtual Network Editor
 
-### Out of Scope
+1. Open the Virtual Network Editor on your host machine with Administrator privileges.
+2. Select the NAT network adapter, typically VMnet8.
+3. Under Subnet IP, change the range to match the isolated enterprise block:
 
-- Installing Active Directory Domain Services
-- Promoting the domain controller
-- Creating organizational units
-- Creating users and groups
-- Configuring Group Policy
-- Installing Microsoft Entra Connect
-- Configuring Microsoft Entra Cloud Sync
-- Synchronizing users to Microsoft Entra ID
+| Setting | Value |
+| :--- | :--- |
+| Subnet IP | `10.0.50.0` |
+| Subnet Mask | `255.255.255.0` |
 
-## Lab Summary
+4. Click NAT Settings to modify the virtual gateway:
 
-| Item | Value |
-|---|---|
-| Project | Project 04 — Hybrid Identity Lab |
-| Primary Lab Platform | VMware Workstation |
-| Additional Platforms | VMware ESXi 8, Azure VM |
-| Domain Controller VM Name | AZConnect |
-| Domain Controller Hostname | EntraConnectDC |
-| Server OS | Windows Server 2022 |
-| Active Directory Domain Name | iron.local |
-| NetBIOS Domain Name | IRON |
-| Microsoft 365 / Entra Tenant Domain | Sanitized `.onmicrosoft.com` tenant domain |
-| Domain Controller IP Address | 192.168.50.90 |
-| Subnet Mask | 255.255.255.0 |
-| CIDR | /24 |
-| Network Address | 192.168.50.0 |
-| Default Gateway | 192.168.50.1 |
-| DNS Server on Domain Controller | 127.0.0.1 |
-| Alternate DNS Server on Domain Controller | 192.168.50.90 |
-| Recommended DNS for Domain Clients | 192.168.50.90 |
-| DNS Forwarder | 192.168.50.1 |
+| Setting | Value |
+| :--- | :--- |
+| Gateway IP | `10.0.50.2` |
 
-## Naming Plan
+> 💡 Why this option?
+> In VMware NAT, `.1` is reserved for the host machine's virtual interface, and `.2` functions as the virtual router gateway providing internet access.
 
-| Name Type | Value | Purpose |
-|---|---|---|
-| VM Name | AZConnect | Name shown in VMware Workstation inventory |
-| Windows Hostname | EntraConnectDC | Name used by Windows, DNS, and Active Directory |
-| AD DNS Domain Name | iron.local | Internal Active Directory domain name |
-| NetBIOS Domain Name | IRON | Short legacy domain name used by Windows domain logon and NetBIOS registration |
-| Cloud Tenant Domain | Sanitized `.onmicrosoft.com` domain | Microsoft 365 / Entra ID tenant namespace |
+5. Click Apply.
+6. Click OK.
 
-## VM Name vs Windows Hostname
+### Step 2: Adjust Virtual Machine Hardware Network Settings
 
-The VM name and Windows hostname are different.
+1. Right-click the `EntraConnectDC` virtual machine.
+2. Select Settings.
+3. Navigate to the Network Adapter hardware component.
+4. Change the network connection type from Bridged to NAT.
 
-The VM name is used by the virtualization platform.
+> 💡 Why this option?
+> Bridged mode exposes the VM directly to the home broadcast domain. NAT mode isolates the AD DS traffic inside the hypervisor while using the host's IP address to source-translate internet traffic.
 
-The Windows hostname is used by the operating system, DNS, Active Directory, and domain services.
+---
 
-In this lab:
+## 💻 Command Prompt Steps
 
-```text
-VM name: AZConnect
-Windows hostname: EntraConnectDC
-```
+Run these validation commands on the guest operating system, `EntraConnectDC`, to confirm baseline network functionality.
 
-## AD Domain Name vs NetBIOS Name
-
-The Active Directory DNS domain name is:
-
-```text
-iron.local
-```
-
-The NetBIOS domain name is:
-
-```text
-IRON
-```
-
-Modern domain logon can use UPN format:
-
-```text
-user@iron.local
-```
-
-Legacy domain logon can use NetBIOS format:
-
-```text
-IRON\user
-```
-
-Both naming formats are important to understand when supporting Windows authentication, domain joins, older applications, and hybrid identity environments.
-
-## Domain Name Consideration
-
-The internal Active Directory domain for this lab is:
-
-```text
-iron.local
-```
-
-This is acceptable for an internal lab environment.
-
-However, `.local` is not a routable public DNS namespace.
-
-For Microsoft Entra ID and Microsoft 365 synchronization planning, users may need an alternate UPN suffix that matches a verified or tenant-supported cloud sign-in domain.
-
-The real tenant domain is not published in this repository and is documented only as a sanitized `.onmicrosoft.com` tenant domain.
-
-This will be handled later during Microsoft Entra Connect or Microsoft Entra Cloud Sync planning.
-
-## Network Plan
-
-| Network Setting | Value |
-|---|---|
-| Domain Controller IP Address | 192.168.50.90 |
-| Subnet Mask | 255.255.255.0 |
-| CIDR | /24 |
-| Network Address | 192.168.50.0 |
-| Default Gateway | 192.168.50.1 |
-| DNS Server on DC | 127.0.0.1 |
-| Alternate DNS Server on DC | 192.168.50.90 |
-| Router DNS / Forwarder | 192.168.50.1 |
-
-## DNS Design
-
-DNS is required for Active Directory.
-
-Domain controllers register DNS records that allow domain-joined computers to locate:
-
-- Domain controllers
-- Kerberos services
-- LDAP services
-- Global catalog services
-- Domain resources
-
-On the domain controller, DNS is configured to use:
-
-```text
-127.0.0.1
-192.168.50.90
-```
-
-Domain clients should use the domain controller IP address for DNS:
-
-```text
-192.168.50.90
-```
-
-Using an external DNS server directly on a domain-joined client can prevent the client from locating the domain controller.
-
-The router DNS address `192.168.50.1` is used as a DNS forwarder inside the DNS Server role for external name resolution.
-
-## Current Validation Evidence
-
-The following command was used to validate the Windows hostname:
+### Validate Hostname
 
 ```cmd
 hostname
 ```
 
-Observed result:
+* What this proves: This confirms that the system identifies itself by the designated server name: `EntraConnectDC`.
 
-```text
-EntraConnectDC
-```
-
-The following command was used to validate IP and DNS configuration:
+### Validate IP Configuration
 
 ```cmd
 ipconfig /all
 ```
 
-Key observed values:
+* What this proves: This validates that the guest operating system interface has acquired or been assigned an IP address within the `10.0.50.x` subnet.
 
-| Setting | Observed Value |
-|---|---|
-| Host Name | EntraConnectDC |
-| Primary DNS Suffix | Iron.local |
-| Node Type | Hybrid |
-| DHCP Enabled | No |
-| IPv4 Address | 192.168.50.90 |
-| Subnet Mask | 255.255.255.0 |
-| Default Gateway | 192.168.50.1 |
-| DNS Servers | 127.0.0.1, 192.168.50.90 |
-| NetBIOS over TCP/IP | Enabled |
-
-The following command was used to validate local NetBIOS name registration:
+### Validate Internet and DNS Resolution
 
 ```cmd
-nbtstat -n
+ping google.com
 ```
 
-Observed output:
+* What this proves: This confirms that the virtual NAT gateway, `10.0.50.2`, is routing traffic to the public internet and that basic DNS resolution is operational.
 
-```text
-Ethernet0:
-Node IpAddress: [192.168.50.90] Scope Id: []
+---
 
-                NetBIOS Local Name Table
+## 📜 PowerShell Steps
 
-       Name               Type         Status
-    ---------------------------------------------
-    ENTRACONNECTDC <00>  UNIQUE      Registered
-    IRON           <00>  GROUP       Registered
-    IRON           <1C>  GROUP       Registered
-    ENTRACONNECTDC <20>  UNIQUE      Registered
-    IRON           <1B>  UNIQUE      Registered
+Run this command on the host machine to confirm that the virtual VMnet8 network interface has updated its binding to the new gateway architecture.
+
+```powershell
+Get-NetIPAddress -InterfaceAlias "*VMnet8*" -AddressFamily IPv4 | Select-Object IPAddress, InterfaceAlias
 ```
 
-## NetBIOS Output Explanation
+* Why it matters: This confirms the host side of the virtual bridge is using `10.0.50.1`, allowing clear communication into the lab environment for management or testing.
 
-| Entry | Meaning |
-|---|---|
-| `ENTRACONNECTDC <00> UNIQUE` | The Windows hostname is registered |
-| `IRON <00> GROUP` | The NetBIOS domain name is registered |
-| `IRON <1C> GROUP` | Domain controller-related NetBIOS registration |
-| `ENTRACONNECTDC <20> UNIQUE` | Server service registration |
-| `IRON <1B> UNIQUE` | Domain-related master browser registration |
+---
 
-## Validation Results
+## 🔍 Validation
 
-| Validation Check | Result | Status |
-|---|---|---|
-| Hostname validation | `EntraConnectDC` returned by `hostname` | Passed |
-| Primary DNS suffix | `Iron.local` shown in `ipconfig /all` | Passed |
-| Static IP address | `192.168.50.90` configured | Passed |
-| Subnet mask | `255.255.255.0` configured | Passed |
-| Default gateway | `192.168.50.1` configured | Passed |
-| DNS server on DC | `127.0.0.1` configured | Passed |
-| Alternate DNS server | `192.168.50.90` configured | Passed |
-| Domain DNS lookup | `iron.local` resolves to `192.168.50.90` | Passed |
-| Gateway connectivity | Ping to `192.168.50.1` successful with `0%` loss | Passed |
-| Domain controller IP connectivity | Ping to `192.168.50.90` successful with `0%` loss | Passed |
-| DNS health check | `dcdiag /test:dns /v` passed after DNS registration and Netlogon restart | Passed |
+### Expected Routing Configuration
 
-## DNS Forwarder Review
+| Metric | Expected Value | Verification Method |
+| :--- | :--- | :--- |
+| Lab IP subnet | `10.0.50.0/24` | `ipconfig /all` on guest |
+| Default gateway | `10.0.50.2` | `ipconfig /all` on guest |
+| Host VMnet8 IP | `10.0.50.1` | `ipconfig` on host |
+| WAN reachability | Successful reply | `ping 8.8.8.8` on guest |
 
-DNS forwarders were reviewed on the domain controller.
+### What Failure Looks Like
 
-The router DNS forwarder is configured as:
+| Symptom | Possible Root Cause |
+| :--- | :--- |
+| `ping google.com` fails with `Ping request could not find host` | The guest OS may be pointing to `10.0.50.1` as the gateway instead of `10.0.50.2`, or the host's Virtual Network Editor did not apply the NAT settings correctly. |
 
-```text
-192.168.50.1
-```
+---
 
-An unexpected DNS forwarder was previously observed:
+## 🛠️ Troubleshooting
 
-```text
-192.168.124.90
-```
+| Issue | Possible Cause | How to Validate | Fix |
+| :--- | :--- | :--- | :--- |
+| No internet inside VM | Gateway mismatch | Check the default gateway using `ipconfig` | Change the guest IP properties to point to `10.0.50.2` |
+| IP conflict on host | Overlapping subnet chosen | Run `ipconfig` on the host to check physical Wi-Fi/Ethernet networks | Change the VMware NAT subnet to a non-overlapping space, such as `172.16.50.0/24` |
 
-That address was not part of the current `192.168.50.0/24` lab subnet and was removed from DNS forwarders.
+---
 
-The final DNS forwarder configuration uses the lab router DNS address for external name resolution, while the domain controller continues to use AD-integrated DNS for domain services.
+## 🔒 Security and Governance Notes
 
-## DNS Health Check
+### Network Isolation
+Running local domain infrastructure directly on residential or production networks introduces security risks, including unmanaged DNS conflict risks and exposed SMB ports. NAT or host-only configurations enforce stricter sandboxing by keeping lab traffic isolated from the main physical network.
 
-The command `dcdiag /test:dns /v` was used to validate DNS health.
+### UPN Design Debt
+Using `.local` or other non-routable suffixes creates identity debt. In production, matching the on-premises UPN suffix to a verified public custom domain avoids relying on default cloud fallback routing.
 
-The first DNS health check returned a warning related to DNS RPC connectivity.
+---
 
-Follow-up remediation steps were performed:
+## 📝 Documentation Evidence
 
 ```cmd
-ipconfig /registerdns
-net stop netlogon
-net start netlogon
+C:\Users\EntraConnect>ipconfig /all
+
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : EntraConnectDC
+   Primary Dns Suffix  . . . . . . . : Iron.local
+
+Ethernet adapter Ethernet0:
+
+   IPv4 Address. . . . . . . . . . . : 10.0.50.90(Preferred)
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 10.0.50.2
+   DNS Servers . . . . . . . . . . . : 127.0.0.1
+                                       10.0.50.90
 ```
 
-After registering DNS records and restarting Netlogon, `dcdiag /test:dns /v` passed.
+---
 
-Validated results included:
+## 🎓 Lessons Learned
 
-| DNS Validation Item | Result |
-|---|---|
-| DNS service running | Passed |
-| DC is a DNS server | Passed |
-| DNS servers on NIC | `127.0.0.1` and `192.168.50.90` valid |
-| DNS forwarder | `192.168.50.1` valid |
-| Delegation test | Passed |
-| Dynamic update test | Passed |
-| Records registration test | Passed |
-| Final DNS summary | `PASS PASS PASS PASS PASS PASS n/a` |
+- 🧭 The role of the NAT gateway: VMware maps the default gateway for virtual environments to `.2`, which differs from standard home networks where `.1` is typically the router.
+- ☁️ Cloud identity matching: Entra ID requires valid public top-level domain verification. Therefore, `xkdk1.onmicrosoft.com` must be deployed as an alternative UPN suffix locally to support clean user matching.
 
-## Initial Findings
+---
 
-- The hybrid identity lab will use VMware Workstation as the primary platform.
-- ESXi 8 and Azure VM are also available as lab platforms.
-- The domain controller VM name is `AZConnect`.
-- The Windows hostname is `EntraConnectDC`.
-- The internal Active Directory domain is `iron.local`.
-- The NetBIOS domain name is `IRON`.
-- The domain controller is using static IP address `192.168.50.90`.
-- The lab network is `192.168.50.0/24`.
-- The default gateway is `192.168.50.1`.
-- DNS resolution for `iron.local` successfully returns `192.168.50.90`.
-- Gateway connectivity to `192.168.50.1` is successful.
-- Local domain controller IP connectivity to `192.168.50.90` is successful.
-- The domain controller NIC DNS configuration was updated to use `127.0.0.1` and `192.168.50.90`, keeping DNS resolution aligned to the domain controller.
-- The router DNS address `192.168.50.1` is configured as a DNS Server forwarder for external name resolution.
-- An unexpected DNS forwarder, `192.168.124.90`, was identified and removed because it was not part of the current lab subnet.
-- DNS records were re-registered using `ipconfig /registerdns`.
-- The Netlogon service was restarted to refresh domain controller DNS registration.
-- `dcdiag /test:dns /v` passed after DNS remediation.
-- The `.local` AD domain works for the internal lab, but UPN suffix planning will be required before Microsoft Entra ID synchronization.
+## 🗣️ Interview Talking Points
 
-## Validation Commands
-
-The following commands can be used to validate the current server and network configuration.
-
-### Validate hostname
-
-```cmd
-hostname
-```
-
-### Validate IP and DNS configuration
-
-```cmd
-ipconfig /all
-```
-
-### Validate NetBIOS registration
-
-```cmd
-nbtstat -n
-```
-
-### Validate domain DNS lookup
-
-```cmd
-nslookup iron.local
-```
-
-### Validate gateway connectivity
-
-```cmd
-ping 192.168.50.1
-```
-
-### Validate domain controller IP connectivity
-
-```cmd
-ping 192.168.50.90
-```
-
-### Validate DNS health
-
-```cmd
-dcdiag /test:dns /v
-```
-
-## Troubleshooting Notes
-
-| Issue | Possible Cause | Validation |
-|---|---|---|
-| Client cannot join domain | Client DNS is not pointing to the domain controller | Check client DNS settings |
-| Domain name does not resolve | DNS zone or DC DNS registration issue | Run `nslookup iron.local` |
-| Server name does not resolve | DNS record missing or incorrect | Run `nslookup EntraConnectDC` |
-| Gateway unreachable | Network adapter, VLAN, NAT, or virtual switch issue | Run `ping 192.168.50.1` |
-| Wrong hostname shown | Windows hostname not renamed correctly | Run `hostname` |
-| Wrong domain shown | Domain join or promotion issue | Run `systeminfo` or check domain properties |
-| Domain controller has router listed as secondary NIC DNS | Router DNS may not understand AD DS records | Use the DC itself for DNS and configure router DNS as a DNS Server forwarder |
-| Unexpected DNS forwarder appears | Old lab network, previous IP configuration, or accidental entry | Confirm the subnet and remove if not required |
-| `dcdiag /test:dns` shows DNS RPC warning | DNS records or Netlogon registration may need refresh | Run `ipconfig /registerdns`, restart Netlogon, then re-run `dcdiag /test:dns /v` |
-
-## What This Builds Toward
-
-This lab design prepares for:
-
-- Active Directory Domain Services installation
-- Domain controller promotion
-- DNS validation
-- OU creation
-- User and group creation
-- Group Policy basics
-- Microsoft Entra Connect planning
-- Source-of-authority validation
-- Hybrid identity synchronization
-- Sync troubleshooting
-
-## PowerShell and Command-Line Opportunities
-
-| Task | Tool |
-|---|---|
-| Validate hostname | `hostname` |
-| Validate IP configuration | `ipconfig /all` |
-| Validate DNS lookup | `nslookup` |
-| Validate connectivity | `ping` |
-| Validate NetBIOS registration | `nbtstat -n` |
-| Validate domain controller health | `dcdiag` |
-| Validate DNS health | `dcdiag /test:dns` |
-| Validate AD replication | `repadmin` |
-| Manage AD users and groups | Active Directory PowerShell module |
-
-## Technical Recall Questions
-
-- What is the difference between a VM name and a Windows hostname?
-- What is the difference between an AD DNS domain name and a NetBIOS domain name?
-- Why does Active Directory depend on DNS?
-- Why should domain clients use the domain controller as DNS?
-- What does `nbtstat -n` show?
-- Why can `.local` create issues for Microsoft Entra ID synchronization?
-- What is a UPN suffix?
-- What is source of authority in hybrid identity?
-- Why should network settings be validated before installing or troubleshooting AD DS?
-- What does `dcdiag /test:dns` validate?
-- Why can restarting Netlogon refresh domain controller DNS records?
-
-## Lessons Learned
-
-- Hybrid identity requires a working on-premises identity foundation before synchronization is configured.
-- VM names, Windows hostnames, AD DNS names, and NetBIOS names serve different purposes.
-- DNS is a core dependency for Active Directory.
-- Domain clients should use the domain controller for DNS resolution.
-- Router DNS can still be useful as a DNS forwarder, but it should not replace AD DNS for domain services.
-- A `.local` AD domain can work internally, but Microsoft Entra ID synchronization requires planning for user sign-in names and verified tenant domains.
-- `dcdiag /test:dns /v` provides deeper DNS health validation than basic name resolution alone.
-- Re-registering DNS records and restarting Netlogon can refresh domain controller DNS registration.
-- Command-line validation helps confirm server identity, network configuration, DNS health, and domain name registration before deeper configuration begins.
+> "When building hybrid identity labs or planning cloud migrations, I avoid network overlap by deploying dedicated, isolated subnets using NAT environments. I am also aware that legacy environments frequently utilize non-routable `.local` internal domains. To remediate this for Microsoft Entra ID sync readiness, I configure an alternative UPN suffix within Active Directory Domains and Trusts that aligns with the corporate verified domain, ensuring a seamless user sign-in experience post-synchronization."
