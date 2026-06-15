@@ -20,7 +20,7 @@ By architecting an isolated virtual network, the local Active Directory Domain S
 
 - 💻 Hypervisor Platform: VMware Workstation or VMware ESXi 8 installed on the host machine.
 - 🗺️ Host Network Awareness: Identified the physical local subnet, such as `192.168.50.0/24`, to ensure the lab subnet does not overlap.
-- ☁️ Cloud Tenant Suffix: Access to the Microsoft Entra ID tenant domain prefix, `xkdk1.onmicrosoft.com`.
+- ☁️ Cloud Tenant Suffix: Access to the Microsoft Entra ID tenant domain prefix, `xxx.onmicrosoft.com`.
 
 ---
 
@@ -165,7 +165,7 @@ Ethernet adapter Ethernet0:
 ## 🎓 Lessons Learned
 
 - 🧭 The role of the NAT gateway: VMware maps the default gateway for virtual environments to `.2`, which differs from standard home networks where `.1` is typically the router.
-- ☁️ Cloud identity matching: Entra ID requires valid public top-level domain verification. Therefore, `xkdk1.onmicrosoft.com` must be deployed as an alternative UPN suffix locally to support clean user matching.
+- ☁️ Cloud identity matching: Entra ID requires valid public top-level domain verification. Therefore, `xxx.onmicrosoft.com` must be deployed as an alternative UPN suffix locally to support clean user matching.
 
 ---
 
