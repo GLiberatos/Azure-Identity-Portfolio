@@ -1,174 +1,295 @@
 # Project 04 — Module 01: Lab Design and Network Plan
 
-## 🎯 Purpose
+## Purpose
 
-This module establishes the foundational network architecture and identity routing design for a secure, isolated hybrid identity lab.
+This module establishes and validates the foundational network and naming design for the hybrid identity lab.
 
-By architecting an isolated virtual network, the local Active Directory Domain Services (AD DS) environment can communicate with the internet to sync with Microsoft Entra ID without causing routing conflicts with the physical host network.
+Before introducing identity synchronization or cloud services, the environment must have deterministic DNS, IP addressing, and domain controller discovery.
 
----
-
-## 🧠 What This Lab Teaches
-
-- 🌐 Hypervisor Network Virtualization: Configuring custom Network Address Translation (NAT) subnets within VMware.
-- 🔢 Hybrid Subnet Planning: Preventing overlapping IP space conflicts between home and lab networks.
-- 🆔 Identity Routing Design: Evaluating the impact of non-routable top-level domains, such as `.local`, on cloud synchronization and planning alternative User Principal Name (UPN) suffixes.
+Hybrid identity failures almost always trace back to DNS or network misconfiguration. This module ensures the foundation is correct before moving forward.
 
 ---
 
-## 🛑 Before You Start
+## What This Lab Teaches
 
-- 💻 Hypervisor Platform: VMware Workstation or VMware ESXi 8 installed on the host machine.
-- 🗺️ Host Network Awareness: Identified the physical local subnet, such as `192.168.50.0/24`, to ensure the lab subnet does not overlap.
-- ☁️ Cloud Tenant Suffix: Access to the Microsoft Entra ID tenant domain prefix, `xxx.onmicrosoft.com`.
+- Why domain controllers must use static IP addresses
+- How Active Directory depends on DNS SRV records
+- Why clients must use domain controller DNS, not router DNS
+- What `.local` domains are used for and their cloud limitations
+- How to validate DNS health using command-line tools
+- How to prove a domain controller is advertising correctly
 
 ---
 
-## 🖱️ GUI Build Steps
+## Before You Start
 
-### Step 1: Configure the VMware Virtual Network Editor
+- Windows Server 2022 is installed and running.
+- Server is already promoted to a Domain Controller.
+- Active Directory domain exists: `<domain>.local`.
+- You are logged in as a Domain Administrator.
+- Network adapter is connected through VMware NAT or Host-only networking.
+- No Entra Connect or Cloud Sync components are installed.
 
-1. Open the Virtual Network Editor on your host machine with Administrator privileges.
-2. Select the NAT network adapter, typically VMnet8.
-3. Under Subnet IP, change the range to match the isolated enterprise block:
+> This module focuses on **design validation**, not installation.
 
-| Setting | Value |
-| :--- | :--- |
-| Subnet IP | `10.0.50.0` |
+---
+
+## Lab Design Overview
+
+| Component | Value |
+| --- | --- |
+| Server Hostname | `EntraConnectDC` |
+| AD DNS Domain | `<domain>.local` |
+| Forest | `<domain>.local` |
+| Static IP Address | `10.0.50.90` |
 | Subnet Mask | `255.255.255.0` |
-
-4. Click NAT Settings to modify the virtual gateway:
-
-| Setting | Value |
-| :--- | :--- |
-| Gateway IP | `10.0.50.2` |
-
-> 💡 Why this option?
-> In VMware NAT, `.1` is reserved for the host machine's virtual interface, and `.2` functions as the virtual router gateway providing internet access.
-
-5. Click Apply.
-6. Click OK.
-
-### Step 2: Adjust Virtual Machine Hardware Network Settings
-
-1. Right-click the `EntraConnectDC` virtual machine.
-2. Select Settings.
-3. Navigate to the Network Adapter hardware component.
-4. Change the network connection type from Bridged to NAT.
-
-> 💡 Why this option?
-> Bridged mode exposes the VM directly to the home broadcast domain. NAT mode isolates the AD DS traffic inside the hypervisor while using the host's IP address to source-translate internet traffic.
+| Default Gateway | `10.0.50.2` |
+| DNS Servers | `127.0.0.1`, `10.0.50.90` |
+| DNS Forwarder | Router / NAT Gateway |
+| Virtual Platform | VMware Workstation |
+| Client DNS Requirement | Domain Controller IP only |
 
 ---
 
-## 💻 Command Prompt Steps
+## Why These Design Choices Matter
 
-Run these validation commands on the guest operating system, `EntraConnectDC`, to confirm baseline network functionality.
+### Why Domain Controllers Use Static IPs
+
+Active Directory publishes domain controller locations using DNS records.
+
+If a domain controller's IP address changes:
+
+- Clients cannot authenticate.
+- Kerberos ticketing fails.
+- Group Policy fails.
+- Hybrid identity synchronization breaks.
+
+Static IPs are mandatory for domain controllers.
+
+---
+
+### Why Clients Must Use Domain Controller DNS
+
+Active Directory DNS contains:
+
+- SRV records for LDAP, Kerberos, and Global Catalog.
+- AD-integrated zones.
+- Secure dynamic updates.
+
+Router or ISP DNS servers do not contain these records and will break authentication.
+
+---
+
+### Why `.local` Domains Are Still Used
+
+`.local` domains are common in on-premises labs and legacy environments.
+
+Limitations:
+
+- Cannot be verified in Microsoft Entra ID.
+- Cannot be used directly for cloud UPNs.
+- Requires alternate UPN suffixes for hybrid identity.
+
+This lab intentionally uses `.local` to demonstrate real-world hybrid remediation.
+
+---
+
+## Command Prompt Validation
+
+All commands below are executed on `EntraConnectDC`.
+
+---
 
 ### Validate Hostname
+
+#### Command
 
 ```cmd
 hostname
 ```
 
-* What this proves: This confirms that the system identifies itself by the designated server name: `EntraConnectDC`.
+#### What This Proves
+
+- Confirms the server identity.
+- Confirms the domain controller is using the expected hostname.
+- Reinforces that renaming after AD DS installation is discouraged.
+
+#### Expected Result
+
+```text
+EntraConnectDC
+```
+
+---
 
 ### Validate IP Configuration
+
+#### Command
 
 ```cmd
 ipconfig /all
 ```
 
-* What this proves: This validates that the guest operating system interface has acquired or been assigned an IP address within the `10.0.50.x` subnet.
+#### What This Proves
 
-### Validate Internet and DNS Resolution
+- Static IP is configured.
+- DNS is pointing to the domain controller.
+- No external DNS servers are in use.
+
+#### Expected Results
+
+```text
+DHCP Enabled . . . . . . . . . . . : No
+IPv4 Address. . . . . . . . . . . : 10.0.50.90
+DNS Servers . . . . . . . . . . . : 127.0.0.1
+                                    10.0.50.90
+```
+
+---
+
+### Validate Active Directory DNS Zone
+
+#### Command
 
 ```cmd
-ping google.com
+nslookup <domain>.local
 ```
 
-* What this proves: This confirms that the virtual NAT gateway, `10.0.50.2`, is routing traffic to the public internet and that basic DNS resolution is operational.
+#### What This Proves
 
----
+- AD DNS zone exists.
+- Domain controller is authoritative.
 
-## 📜 PowerShell Steps
+#### Expected Result
 
-Run this command on the host machine to confirm that the virtual VMnet8 network interface has updated its binding to the new gateway architecture.
-
-```powershell
-Get-NetIPAddress -InterfaceAlias "*VMnet8*" -AddressFamily IPv4 | Select-Object IPAddress, InterfaceAlias
+```text
+Name:    <domain>.local
+Address: 10.0.50.90
 ```
 
-* Why it matters: This confirms the host side of the virtual bridge is using `10.0.50.1`, allowing clear communication into the lab environment for management or testing.
+---
+
+### Validate Domain Controller SRV Records
+
+> This is a critical validation step.
+
+#### Command
+
+```cmd
+nslookup -type=SRV _ldap._tcp.dc._msdcs.<domain>.local
+```
+
+#### What This Proves
+
+- LDAP service records are registered.
+- Domain Controller Locator works.
+- Authentication and domain joins can succeed.
+
+#### Expected Result
+
+```text
+_ldap._tcp.dc._msdcs.<domain>.local SRV service location:
+    port           = 389
+    svr hostname   = EntraConnectDC.<domain>.local
+```
 
 ---
 
-## 🔍 Validation
+### Validate Domain Controller Discovery
 
-### Expected Routing Configuration
+#### Command
 
-| Metric | Expected Value | Verification Method |
-| :--- | :--- | :--- |
-| Lab IP subnet | `10.0.50.0/24` | `ipconfig /all` on guest |
-| Default gateway | `10.0.50.2` | `ipconfig /all` on guest |
-| Host VMnet8 IP | `10.0.50.1` | `ipconfig` on host |
-| WAN reachability | Successful reply | `ping 8.8.8.8` on guest |
+```cmd
+nltest /dsgetdc:<domain>.local
+```
 
-### What Failure Looks Like
+#### What This Proves
 
-| Symptom | Possible Root Cause |
-| :--- | :--- |
-| `ping google.com` fails with `Ping request could not find host` | The guest OS may be pointing to `10.0.50.1` as the gateway instead of `10.0.50.2`, or the host's Virtual Network Editor did not apply the NAT settings correctly. |
+- Secure channel is functional.
+- Domain controller roles are advertising correctly.
+
+#### Expected Result
+
+```text
+DC: \\EntraConnectDC.<domain>.local
+Address: \\10.0.50.90
+The command completed successfully
+```
 
 ---
 
-## 🛠️ Troubleshooting
+### Validate DNS Health
+
+#### Command
+
+```cmd
+dcdiag /test:dns /v
+```
+
+#### What This Proves
+
+- DNS zones are healthy.
+- SRV records are registered.
+- Dynamic updates are working.
+- Forwarders are functional.
+
+#### Expected Result
+
+```text
+......................... <domain>.local passed test DNS
+```
+
+---
+
+## Validation Summary
+
+| Check | Result |
+| --- | --- |
+| Static IP | ✅ |
+| DC DNS self-reference | ✅ |
+| AD DNS zone | ✅ |
+| SRV records | ✅ |
+| DC locator | ✅ |
+| DNS diagnostics | ✅ |
+
+This environment meets all prerequisites for hybrid identity.
+
+---
+
+## Troubleshooting
 
 | Issue | Possible Cause | How to Validate | Fix |
-| :--- | :--- | :--- | :--- |
-| No internet inside VM | Gateway mismatch | Check the default gateway using `ipconfig` | Change the guest IP properties to point to `10.0.50.2` |
-| IP conflict on host | Overlapping subnet chosen | Run `ipconfig` on the host to check physical Wi-Fi/Ethernet networks | Change the VMware NAT subnet to a non-overlapping space, such as `172.16.50.0/24` |
+| --- | --- | --- | --- |
+| Domain join fails | Client using router DNS | `ipconfig /all` | Set client DNS to DC IP. |
+| SRV records missing | DNS or NetLogon stopped | `nslookup -type=SRV` | Restart DNS and NetLogon. |
+| Authentication delays | Incorrect forwarders | `dcdiag /test:dns` | Fix DNS forwarders. |
 
 ---
 
-## 🔒 Security and Governance Notes
+## Security and Governance Notes
 
-### Network Isolation
-Running local domain infrastructure directly on residential or production networks introduces security risks, including unmanaged DNS conflict risks and exposed SMB ports. NAT or host-only configurations enforce stricter sandboxing by keeping lab traffic isolated from the main physical network.
-
-### UPN Design Debt
-Using `.local` or other non-routable suffixes creates identity debt. In production, matching the on-premises UPN suffix to a verified public custom domain avoids relying on default cloud fallback routing.
+- DNS is the backbone of Active Directory authentication.
+- Hybrid identity depends on DNS correctness more than cloud configuration.
+- Forwarders should be limited to trusted resolvers.
+- Domain controllers should never rely on external DNS for AD lookups.
 
 ---
 
-## 📝 Documentation Evidence
+## Documentation Evidence
 
-```cmd
-C:\Users\EntraConnect>ipconfig /all
+The following sanitized evidence can be captured for documentation:
 
-Windows IP Configuration
-
-   Host Name . . . . . . . . . . . . : EntraConnectDC
-   Primary Dns Suffix  . . . . . . . : Iron.local
-
-Ethernet adapter Ethernet0:
-
-   IPv4 Address. . . . . . . . . . . : 10.0.50.90(Preferred)
-   Subnet Mask . . . . . . . . . . . : 255.255.255.0
-   Default Gateway . . . . . . . . . : 10.0.50.2
-   DNS Servers . . . . . . . . . . . : 127.0.0.1
-                                       10.0.50.90
+```text
+nslookup <domain>.local → 10.0.50.90
+SRV records present under _msdcs.<domain>.local
+dcdiag DNS tests passed
 ```
 
 ---
 
-## 🎓 Lessons Learned
+## Lessons Learned
 
-- 🧭 The role of the NAT gateway: VMware maps the default gateway for virtual environments to `.2`, which differs from standard home networks where `.1` is typically the router.
-- ☁️ Cloud identity matching: Entra ID requires valid public top-level domain verification. Therefore, `xxx.onmicrosoft.com` must be deployed as an alternative UPN suffix locally to support clean user matching.
-
----
-
-## 🗣️ Interview Talking Points
-
-> "When building hybrid identity labs or planning cloud migrations, I avoid network overlap by deploying dedicated, isolated subnets using NAT environments. I am also aware that legacy environments frequently utilize non-routable `.local` internal domains. To remediate this for Microsoft Entra ID sync readiness, I configure an alternative UPN suffix within Active Directory Domains and Trusts that aligns with the corporate verified domain, ensuring a seamless user sign-in experience post-synchronization."
+- Active Directory authentication is DNS-driven.
+- SRV records are more critical than A records.
+- Hybrid identity failures usually start with DNS misconfiguration.
+- Validation must occur before cloud synchronization.
