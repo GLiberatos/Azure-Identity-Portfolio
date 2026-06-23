@@ -75,7 +75,7 @@ This project demonstrates hands-on hybrid identity skills, including:
 
 ## Lab Design
 
-| Component | Planned Value |
+| Component | Value |
 |---|---|
 | Primary Lab Platform | VMware Workstation |
 | Additional Platforms | VMware ESXi 8, Azure VM |
@@ -85,14 +85,14 @@ This project demonstrates hands-on hybrid identity skills, including:
 | Active Directory Domain Name | iron.local |
 | NetBIOS Domain Name | IRON |
 | Microsoft 365 / Entra Tenant Domain | Sanitized `.onmicrosoft.com` tenant domain |
-| Domain Controller IP Address | 192.168.50.90 |
+| Domain Controller IP Address | 10.0.50.90 |
 | Subnet Mask | 255.255.255.0 |
-| Default Gateway | 192.168.50.1 |
-| DNS Server on Domain Controller | 127.0.0.1 |
-| Recommended DNS for Domain Clients | 192.168.50.90 |
-| Test Users | To be created |
-| Test Groups | To be created |
-| Test OUs | To be created |
+| Default Gateway | 10.0.50.2 |
+| DNS Server on Domain Controller | 127.0.0.1 (self), 10.0.50.90 |
+| Recommended DNS for Domain Clients | 10.0.50.90 (domain controller only) |
+| Test Users | Created — department OUs; standard + separated `adm-` admin accounts |
+| Test Groups | Created — security groups incl. PSO and GPO security-filtering groups |
+| Test OUs | Created — `LAB` → `Corp` → `Admins` / `Groups` / `Users` / `Computers` + departments |
 
 ## Domain Name Note
 
@@ -126,15 +126,15 @@ The real tenant domain is not published in this repository and is documented onl
 | Project README created | Complete |
 | Lab design completed | Complete |
 | Windows Server VM prepared | Complete |
-| AD DS installed | Planned |
-| Domain controller promoted | Planned |
+| AD DS installed | Complete |
+| Domain controller promoted | Complete |
 | DNS validated | Complete |
-| OUs created | Planned |
-| Users and groups created | Planned |
-| Group Policy basics reviewed | Planned |
+| OUs created | Complete |
+| Users and groups created | Complete |
+| Group Policy basics reviewed | Complete |
 | Hybrid identity sync planned | Planned |
 | Sync validation completed | Planned |
-| Troubleshooting documented | Planned |
+| Troubleshooting documented | In Progress |
 
 ## Documentation Standards
 
@@ -156,6 +156,15 @@ Do not expose:
 
 ## Next Steps
 
-The next step is to document the Windows Server domain controller build.
+The on-premises foundation is complete: the domain controller is built and healthy, the
+Active Directory structure (OUs, users, groups) is in place, and Group Policy fundamentals
+have been validated on a domain-joined client.
 
-This includes reviewing the Windows Server configuration, Active Directory Domain Services role installation, domain controller promotion, DNS validation, and post-promotion health checks.
+The next step is hybrid identity synchronization (Module 05 — Entra Connect / Cloud Sync
+planning, followed by Module 06 — sync validation). This covers source-of-authority,
+choosing and scoping the sync engine, source-anchor / immutable ID behavior, and validating
+that on-premises objects project into Microsoft Entra ID with the correct attributes.
+
+Note: directory-sync tooling appears to be already staged on the domain controller (the
+`ADSync*` service groups are present), so Module 05 will review the existing configuration
+rather than installing from scratch.
